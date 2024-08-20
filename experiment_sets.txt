@@ -1,0 +1,11 @@
+# Experiment sets
+
+# Set 1
+set1 = {'field':[(43, 24), (20, 47), (13, 34), (12, 9), (22, 0)],
+'init_positions':[np.array([14, 34]),  # Agent 1
+np.array([80/2, 50/2]),  # Agent 2 
+np.array([40/2, 80/2]),  # Agent 3
+],
+'infected_locations': {(15,10), (22,13), (25,20), (26,21), (35,25), (25, 35)}
+}
+
