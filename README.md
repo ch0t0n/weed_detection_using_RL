@@ -3,6 +3,7 @@
 **Notebook to run:** `multi_agent_aug20.ipynb`
 
 **IMPORTANT:** Restart the kernel each time before running any of the below set of instructions
+
 **NEVER** press the "X" button in the PyGame window, restart the kernel instead.
 
 ## Instructions for random actions using PyGame
