@@ -1,4 +1,6 @@
+import os
 import argparse
+from datetime import datetime
 from stable_baselines3 import A2C, PPO
 from sb3_contrib import TRPO, RecurrentPPO
 from stable_baselines3.common.env_util import make_vec_env
@@ -17,10 +19,16 @@ if __name__ == "__main__":
     parser.add_argument('--num_envs', type=int, default=4, help='The number of parallel environments to run')
     
     args = parser.parse_args()
+    print(f'Algorithm: {args.algorithm}\nSet: {args.set}\nGamma: {args.gamma}\nTraining steps: {args.steps}\n')
     
+    # Configure environment
     env_config = load_experiment(f'experiments/set{args.set}.yaml')
     vec_env = make_vec_env('ThreeAgentGridworld-v0', env_kwargs={'env_config': env_config}, n_envs=4)
     
+    if not os.path.exists('logs'):
+        os.makedirs('logs')
+
+    # Configure model
     if args.algorithm == 'A2C':
         model = A2C("MlpPolicy", vec_env, verbose=args.verbose, tensorboard_log="./logs", gamma=args.gamma)
     elif args.algorithm == 'PPO':
@@ -30,7 +38,17 @@ if __name__ == "__main__":
     else:
         model = RecurrentPPO("MlpLstmPolicy", vec_env, verbose=args.verbose, tensorboard_log="./logs", gamma=args.gamma)
 
-    model.learn(total_timesteps=args.steps)
-    model.save(f'trained_models/{args.algorithm}_set{args.set}.pth')
+    # Train model
+    start_time = datetime.now()
+    print(f'Training started on {start_time.ctime()}')
+    model.learn(total_timesteps=args.steps, tb_log_name=f"{args.algorithm}_set{args.set}")
+    end_time = datetime.now()
+    print(f'Training ended on {end_time.ctime()}')
+    print(f'Training lasted {end_time - start_time}')
+    
+    # Save model
+    if not os.path.exists('trained_models'):
+        os.makedirs('trained_models')
+    model.save(f'trained_models/{args.algorithm}_set{args.set}.zip')
 
     vec_env.close()

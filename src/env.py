@@ -10,14 +10,13 @@ from src.utils import binary_list_to_decimal
 # The agricultural field environment
 class ThreeAgentGridworldEnv(gym.Env):
     metadata = {'render_modes': ['human', 'print', 'rgb_array'], "render_fps": 4}    
-    def __init__(self, render_mode=None, grid_size=(50, 50), env_config=None):
+    def __init__(self, render_mode=None, env_config=None):
         super(ThreeAgentGridworldEnv, self).__init__()
         self.config = copy.deepcopy(env_config)
         self.poly_vertices = self.config['field']
         self.Poly = Polygon(self.poly_vertices) # Get the points of the polygon
-        self.size = grid_size[0]  # The size of the square grid
         self.window_size = 800  # The size of the PyGame window        
-        self.grid_size = grid_size # Size of the grid (May need to remove later on)
+        self.grid_size = self.config['grid_size'] # Size of the grid
         self.outer_boundary = self.Poly.buffer(distance=2) # outer boundary with buffer of distance 2
 
         # Observation points
@@ -60,8 +59,8 @@ class ThreeAgentGridworldEnv(gym.Env):
     def obs_points(self):
         xp,yp = self.Poly.exterior.xy
         # Gridpoints
-        xs = np.arange(0, 90, 1)
-        ys = np.arange(0, 90, 1)
+        xs = np.arange(0, self.grid_size, 1)
+        ys = np.arange(0, self.grid_size, 1)
         # Inside points
         # print(xs,ys)
         xps, yps = [], []
@@ -163,7 +162,7 @@ class ThreeAgentGridworldEnv(gym.Env):
 
     def render(self):
         if self.render_mode == 'print':
-            grid = np.zeros(self.grid_size)
+            grid = np.zeros((self.grid_size, self.grid_size))
             grid[tuple(self.agent_positions[0])] = 1  # Mark the position of the first agent
             grid[tuple(self.agent_positions[1])] = 2  # Mark the position of the second agent
             print(grid)
@@ -181,7 +180,7 @@ class ThreeAgentGridworldEnv(gym.Env):
             canvas = pygame.Surface((self.window_size, self.window_size))
             canvas.fill((255, 255, 255))
             pix_square_size = (
-                self.window_size / self.size
+                self.window_size / self.grid_size
             )  # The size of a single grid square in pixels
 
             # Draw the polygon

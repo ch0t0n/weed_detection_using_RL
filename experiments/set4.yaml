@@ -1,3 +1,4 @@
+grid_size: 50
 field:
 - !!python/tuple
   - 38

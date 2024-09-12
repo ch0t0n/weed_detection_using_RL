@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     # Generate the specified number of experiments
     for _ in range(args.number):
-        experiment = {}
+        experiment = {'grid_size': args.max_size}
 
         response = 'n'
         while response.lower() != 'y':

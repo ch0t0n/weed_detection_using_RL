@@ -1,4 +1,4 @@
-name: wd
+name: rl4pag
 channels:
   - conda-forge
   - defaults
@@ -31,7 +31,9 @@ dependencies:
   - libedit=3.1.20191231
   - libexpat=2.6.2
   - libffi=3.4.2
+  - libgcc=14.1.0
   - libgcc-ng=14.1.0
+  - libgfortran=14.1.0
   - libgfortran-ng=14.1.0
   - libgfortran5=14.1.0
   - libgomp=14.1.0
@@ -43,6 +45,7 @@ dependencies:
   - libre2-11=2023.09.01
   - libsodium=1.0.18
   - libsqlite=3.46.0
+  - libstdcxx=14.1.0
   - libstdcxx-ng=14.1.0
   - libuuid=2.38.1
   - libxcrypt=4.4.36
@@ -151,4 +154,4 @@ dependencies:
       - tzdata==2024.1
       - urllib3==2.2.2
       - wrapt==1.16.0
-prefix: /home/jwoods/miniconda3/envs/wd
+prefix: /homes/jwoods03/miniconda3/envs/rl4pag
