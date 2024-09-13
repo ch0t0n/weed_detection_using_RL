@@ -1,37 +1,99 @@
 # Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning
 
-**Notebook to run:** `multi_agent_aug20.ipynb`
+This is the codebase for the ICRA 2025 paper "Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning", written by Jahid Chowdhury Choton, John Woods, Raja Farrukh Ali, and William Hsu. In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
 
-**IMPORTANT:** Restart the kernel each time before running any of the below set of instructions
-**NEVER** press the "X" button in the PyGame window, restart the kernel instead.
+* Developing a novel, customizable RL environment that represents an agricultural field with 3 spraying robots
+* Analyzing 4 state-of-the-art RL algorithms across 10 different environments
+* Creating a simultion framework of the environment using the CoppeliaSim robot simulator
 
-## Instructions for random actions using PyGame
+## Setup
 
-1. Run cells 1, 2, 3, and 4 for environment setup
-2. Run cell 5 for random actions
+The necessary packages and libraries needed to run the code are provided in the `environment.yaml` conda file. If you do not have conda installed on your machine, download it [here](https://docs.anaconda.com/miniconda/miniconda-install/). Once it is installed, run the following command to set up the environment:
 
-## Instructions for acting with trained network using PyGame
+```
+conda env create -f environment.yaml
+```
 
-1. Run cells 1, 2, 3, and 4 for environment setup
-2. Run cell 9 to load the trained network
-3. Run cell 10 for acting with the trained network
+If you update the environment by installing or removing packages, please update the conda file with the following command:
 
-## Instructions for random actions using CoppeliaSim
+```
+conda env export --no-builds > environment.yaml
+```
 
-**IMPORTANT:** Close any previously opened scene file. Never save the scene file while closing.
+## Generating Experiments
 
-1. Open the scene file `simulation_env/drone_test_scene_aug14.ttt` using CoppeliaSim robot simulator
-2. Run cells 1, 2, 3, and 4 for environment setup
-3. Run cell 12 to initialize the simulator
-4. Run cell 13 for random actions
-5. Run cell 15 to stop the simulator once finished
+10 sets of experiments are already provided in this repository, with sets 1-8 having a field size of 50x50 and sets 9-10 having a field size of 100x100. To generate a single 50x50 field size experiment, simply run:
 
-## Instructions for acting with trained network using CoppeliaSim
+```
+python3 generate_experiments.py
+```
 
-**IMPORTANT:** Close any previously opened scene file. Never save the scene file while closing.
+Newly generated experiments will be placed in the `experiments` directory. Additional experiments with different sizes can be generated using this command format:
 
-1. Open the scene file `simulation_env/drone_test_scene_aug14.ttt` using CoppeliaSim robot simulator
-2. Run cells 1, 2, 3, and 4 for environment setup
-3. Run cell 12 to initialize the simulator
-4. Run cell 14 for acting with the trained network
-5. Run cell 15 to stop the simulator once finished
+```
+python3 generate_experiments.py [number of experiments] --max_size [field size]
+```
+
+## Training
+
+### On your local machine
+
+To train an algorithm with the default configuration, run the following command:
+
+```
+python3 train.py --algorithm A2C --set 1
+```
+
+The currently implemented algorithms are `A2C`, `PPO`, `TRPO`, and `RecurrentPPO`. The possible values for --`set` depend on the number of sets in the `experiments` directory. Training can be further configured using the following command format:
+
+```
+python3 train.py --algorithm {A2C, PPO, TRPO, RecurrentPPO} --set [set number] --verbose {0 for no output, 1 for info, 2 for debug} --gamma [discount factor] --steps [number of training steps] --num_envs [number of parallel environments]
+```
+
+### On Beocat
+
+Slurm scripts for training the model are also provided in the `training_scripts` directory. To run all experiments, use the command:
+
+```
+sbatch training_scripts/train.sh
+```
+
+To run just a single experiment, first configure the experiment in the `training_scripts/run_one.sh` file. Then, run the following command to start it:
+
+```
+sbatch training_scripts/run_one.sh
+```
+
+### Viewing Results
+
+Training for 1 million timesteps takes around 1-4 hours, depending on the algorithm. Once complete, the trained model will be saved in the `trained_models` directory.
+
+Logs containg the reward info are also generated as the model trains. To view them, simply run:
+
+```
+tensorboard --logdir=./logs
+```
+
+## Simulation
+
+**Note:** Simulation can only be done once you have fully trained a model.
+
+### PyGame
+
+To simulate a trained model in the PyGame rendering of the environment, run the following command:
+
+```
+python3 run.py --algorithm A2C --set 1 --simulate False
+```
+
+### CoppeliaSim
+
+First, you will need to download the CoppeliaSim robotics simulator [here](https://coppeliarobotics.com/). Once it is installed, open the `simulation_env/drone_test_scene_aug14.ttt` scene in the simulator.
+
+**IMPORTANT:** You will need to reopen the scene each time before running the simulation. Never save changes to the scene file when closing.
+
+To simulate a trained model in CoppeliaSim, run the following command:
+
+```
+python3 run.py --algorithm A2C --set 1 --simulate True
+```
