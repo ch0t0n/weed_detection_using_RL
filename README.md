@@ -47,7 +47,7 @@ python3 train.py --algorithm A2C --set 1
 The currently implemented algorithms are `A2C`, `PPO`, `TRPO`, and `RecurrentPPO`. The possible values for --`set` depend on the number of sets in the `experiments` directory. Training can be further configured using the following command format:
 
 ```
-python3 train.py --algorithm {A2C, PPO, TRPO, RecurrentPPO} --set [set number] --verbose {0 for no output, 1 for info, 2 for debug} --gamma [discount factor] --steps [number of training steps] --num_envs [number of parallel environments]
+python3 train.py --algorithm {A2C, PPO, TRPO, RecurrentPPO} --set [set number] --verbose {0 for no output, 1 for info, 2 for debug} --gamma [discount factor] --steps [number of training steps] --num_envs [number of parallel environments] --resume {True for resuming training, False for new model}
 ```
 
 ### On Beocat

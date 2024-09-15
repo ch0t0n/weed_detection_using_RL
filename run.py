@@ -1,17 +1,13 @@
 import argparse
-from stable_baselines3 import A2C, PPO
-from sb3_contrib import TRPO, RecurrentPPO
 import pygame
 import gymnasium as gym
-import distutils
 from coppeliasim_zmqremoteapi_client import RemoteAPIClient
 from src.sim import DroneSimulator
-from src.utils import load_experiment
+from src.utils import load_experiment, load_model, parse_bool
 
 if __name__ == '__main__':
 
     # Parse arguments
-    parse_bool = lambda b: bool(distutils.util.strtobool(b))
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--algorithm', type=str, required=True, choices=['A2C', 'PPO', 'TRPO', 'RecurrentPPO'], help='The DRL algorithm to use')
@@ -21,15 +17,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Load the model
-    model_path = f'trained_models/{args.algorithm}_set{args.set}.zip'
-    if args.algorithm == 'A2C':
-        model = A2C.load(model_path)
-    elif args.algorithm == 'PPO':
-        model = PPO.load(model_path)
-    elif args.algorithm == 'TRPO':
-        model = TRPO.load(model_path)
-    else:
-        model = RecurrentPPO.load(model_path)
+    model = load_model(args.algorithm, args.set)
 
     # Make the environment
     env_config = load_experiment(f'experiments/set{args.set}.yaml')
