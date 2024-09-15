@@ -8,7 +8,7 @@ This is the codebase for the ICRA 2025 paper "Optimal Multi-Robot Path Planning 
 
 ## Setup
 
-The necessary packages and libraries needed to run the code are provided in the `environment.yaml` conda file. If you do not have conda installed on your machine, download it [here](https://docs.anaconda.com/miniconda/miniconda-install/). Once it is installed, run the following command to set up the environment:
+It is recommended to run this codebase on Linux. The necessary packages and libraries needed to run the code are provided in the `environment.yaml` conda file. If you do not have conda installed on your machine, download it [here](https://docs.anaconda.com/miniconda/miniconda-install/). Once it is installed, run the following command to set up the environment:
 
 ```
 conda env create -f environment.yaml
@@ -50,18 +50,18 @@ The currently implemented algorithms are `A2C`, `PPO`, `TRPO`, and `RecurrentPPO
 python3 train.py --algorithm {A2C, PPO, TRPO, RecurrentPPO} --set [set number] --verbose {0 for no output, 1 for info, 2 for debug} --gamma [discount factor] --steps [number of training steps] --num_envs [number of parallel environments] --resume {True for resuming training, False for new model}
 ```
 
-### On Beocat
+### On Compute Clusters
 
 Slurm scripts for training the model are also provided in the `training_scripts` directory. To run all experiments, use the command:
 
 ```
-sbatch training_scripts/train.sh
+sbatch training_scripts/train_all.sh
 ```
 
-To run just a single experiment, first configure the experiment in the `training_scripts/run_one.sh` file. Then, run the following command to start it:
+To run just a single experiment, first configure the experiment in the `training_scripts/train_one.sh` file. Then, run the following command to start it:
 
 ```
-sbatch training_scripts/run_one.sh
+sbatch training_scripts/train_one.sh
 ```
 
 ### Viewing Results
@@ -80,7 +80,7 @@ tensorboard --logdir=./logs
 
 ### PyGame
 
-To simulate a trained model in the PyGame rendering of the environment, run the following command:
+To simulate a trained model in PyGame, run the following command:
 
 ```
 python3 run.py --algorithm A2C --set 1 --simulate False
@@ -96,4 +96,18 @@ To simulate a trained model in CoppeliaSim, run the following command:
 
 ```
 python3 run.py --algorithm A2C --set 1 --simulate True
+```
+
+## Plotting
+
+We also provide some scripts to aid with plotting results. To plot the layouts of the provided 10 experiment sets, run the following command:
+
+```
+python3 plotting/plot_fields.py
+```
+
+Once the experiments have been run, you can plot individual experiment performance and average algorithm performance with the following command:
+
+```
+python3 plotting/plot_results.py
 ```

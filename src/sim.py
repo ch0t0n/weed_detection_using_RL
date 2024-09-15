@@ -1,5 +1,6 @@
 import numpy as np
 
+# CoppeliaSim drone simulator
 class DroneSimulator:    
     def __init__(self, sim, polygon, scaling_factor, height):
         self.sim = sim

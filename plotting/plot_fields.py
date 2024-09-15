@@ -12,6 +12,7 @@ if __name__ == '__main__':
 
     plt.figure(figsize=(25,10))
 
+    # Plot each field as a subfigure
     for i in range(1, 11):
         exp = load_experiment(f'experiments/set{i}.yaml')
         field_poly = Polygon(exp['field'])

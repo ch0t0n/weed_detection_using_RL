@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run all experiments with: sbatch training_scripts/train.sh
+# Run all experiments with: sbatch training_scripts/train_all.sh
 
 #SBATCH --array=0-39
 #SBATCH --job-name=RL4PAg

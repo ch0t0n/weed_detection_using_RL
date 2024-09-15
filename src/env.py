@@ -21,11 +21,8 @@ class ThreeAgentGridworldEnv(gym.Env):
 
         # Observation points
         self.observation_points = self.obs_points()
-        # print('Observation points:', self.observation_points)
         self.observation_length = len(self.observation_points)
         self.observation_map = {tuple(v):i for i,v in enumerate(self.observation_points)}
-        # for p in self.observation_points:
-        #     print('observation map:', p, self.observation_map[tuple(p)])
 
         # Keep track of visited states and count steps
         self.step_count = 0
@@ -38,9 +35,6 @@ class ThreeAgentGridworldEnv(gym.Env):
         
         # Action and observation space
         self.action_space = spaces.MultiDiscrete([5, 5, 5])  # 4 possible actions for each of the two agents
-        # self.observation_positions = spaces.MultiDiscrete([self.observation_length, self.observation_length, self.observation_length])
-        # self.infected_space = spaces.MultiBinary(5)
-        # self.observation_space = spaces.Tuple((self.observation_positions, self.infected_space))
         self.observation_space = spaces.MultiDiscrete([self.observation_length, self.observation_length, self.observation_length, self.infected_state_length])
         
         assert render_mode is None or render_mode in self.metadata["render_modes"] # Check if the render mode is correct
@@ -72,15 +66,12 @@ class ThreeAgentGridworldEnv(gym.Env):
                     yps += [p.y]
         xps += xp
         yps += yp
-        # plt.plot(xp,yp)
-        # plt.scatter(xps,yps, color='r')
         obs_points = np.array(list(set(zip(xps,yps)))) # Taking unique observation points
         return obs_points
     
     def _get_obs(self):
         a1, a2, a3 = self.agent_positions[0], self.agent_positions[1], self.agent_positions[2]
         info = {'agent1': a1, 'agent2': a2, 'agent3': a3, 'step_count': self.step_count}
-        # print('agent positions:', a1, a2, a3)
         p1,p2,p3 = self.observation_map[tuple(a1)], self.observation_map[tuple(a2)], self.observation_map[tuple(a3)]
         infected = binary_list_to_decimal(list(self.infected_dict.values()))
         state = np.array([p1,p2,p3,infected]) # convert the infected binary list to decimal
@@ -92,14 +83,6 @@ class ThreeAgentGridworldEnv(gym.Env):
         self.infected_locations = copy.copy(self.config['infected_locations'])
         self.infected_dict = {v:0 for v in self.infected_locations} # dictionary of locations
         self.agent_positions = self.config['init_positions']
-        # self.agent_positions = [
-        #     np.array([14, 34]),  # Agent 1 
-        #     # np.array([self.grid_size[0]-1, self.grid_size[1]-1]),  # Agent 2 starts at bottom-right corner,
-        #     # np.array([self.grid_size[0]-3, self.grid_size[1]-3])  # Agent 3 starts at specific position,
-        #     np.array([80/2, 50/2]),  # Agent 2 
-        #     np.array([40/2, 80/2]),  # Agent 3
-        # ]
-        # self.agent_positions = random_starting_locations(self.observation_points, self.infected_locations)
         return self._get_obs()
 
     def step(self, action):
@@ -113,17 +96,12 @@ class ThreeAgentGridworldEnv(gym.Env):
         
         # Update the positions of both agents
         for i, act in enumerate(action):
-            # if act == 4: # If the action is none
-            #     terminated = True # Terminated
-            #     break
 
             movement = movements[act] # What movement to take
             new_position = self.agent_positions[i] + movement # New position after movement
             
             # Ensure the new position is within bounds
-            # new_position = np.clip(new_position, [0, 0], [self.grid_size[0]-1, self.grid_size[1]-1])
             new_p = Point(new_position[0], new_position[1])
-            # print("checking new position", tuple(new_position))
             if self.Poly.contains(new_p):
                 self.agent_positions[i] = new_position
             else:
@@ -135,8 +113,8 @@ class ThreeAgentGridworldEnv(gym.Env):
             self.visited.add(tuple(new_position))
         
         # Check if an infected location is visited
-        # JW: Should we make a dedicated action for removing the weed instead of doing it automatically?
-        # JW: Perhaps adding a cost of removing the weed since real drones will have limited herbicide and should be discouraged from wasting it
+        # TODO: Should we make a dedicated action for removing the weed instead of doing it automatically?
+        # TODO: Perhaps adding a cost of removing the weed since real drones will have limited herbicide and should be discouraged from wasting it
         infected_visited = [x for x in self.agent_positions if tuple(x) in self.infected_locations] # If infected cells are visited
         for v in infected_visited:
             if tuple(v) in self.infected_locations:
@@ -157,7 +135,6 @@ class ThreeAgentGridworldEnv(gym.Env):
             terminated = True
         
         obs, info = self._get_obs()
-        # rewards = rewards * self.gamma ** self.step_count
         return obs, rewards, terminated, truncated, info
 
     def render(self):

@@ -28,9 +28,7 @@ if __name__ == '__main__':
     # Set up CoppeliaSim
     if args.simulate:
         client = RemoteAPIClient()
-        print('1')
         sim = client.getObject('sim')
-        print('2')
         defaultIdleFps = sim.getInt32Param(sim.intparam_idle_fps)
         sim.setInt32Param(sim.intparam_idle_fps, 0)
 

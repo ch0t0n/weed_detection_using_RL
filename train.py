@@ -1,6 +1,8 @@
 import os
 import argparse
 from datetime import datetime
+from stable_baselines3 import A2C, PPO
+from sb3_contrib import TRPO, RecurrentPPO
 from stable_baselines3.common.env_util import make_vec_env
 from src.utils import load_experiment, load_model, parse_bool
 
