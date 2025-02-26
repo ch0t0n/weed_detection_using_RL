@@ -6,7 +6,7 @@ field:
   - [12, 9]
   - [22, 0]
 init_positions:
-  - [14, 24]
+  - [14, 34]
   - [40, 25]
   - [20, 40]
 infected_locations:

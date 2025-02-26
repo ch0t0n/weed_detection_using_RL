@@ -1,7 +1,7 @@
 import yaml
 import numpy as np
-from stable_baselines3 import A2C, PPO
-from sb3_contrib import TRPO, RecurrentPPO
+from stable_baselines3 import A2C, PPO, DQN
+from sb3_contrib import TRPO, ARS, RecurrentPPO
 import distutils
 
 # Loads in an experiment config file
@@ -14,16 +14,26 @@ def load_experiment(path):
     return config
 
 # Loads in a trained model
-def load_model(algorithm, st):
-    model_path = f'trained_models/{algorithm}_set{st}.zip'
+def load_model(algorithm, experiment_set, seed, device):
+    model_args = {
+        'path': f'trained_models/{algorithm}_set{experiment_set}.zip',
+        'tb_log_name': f'{algorithm}_set{experiment_set}',
+        'device': device,
+        'seed': seed,
+    }
+
     if algorithm == 'A2C':
-        model = A2C.load(model_path, tb_log_name=f'{algorithm}_set{st}')
+        model = A2C.load(**model_args)
     elif algorithm == 'PPO':
-        model = PPO.load(model_path, tb_log_name=f'{algorithm}_set{st}')
+        model = PPO.load(**model_args)
     elif algorithm == 'TRPO':
-        model = TRPO.load(model_path, tb_log_name=f'{algorithm}_set{st}')
+        model = TRPO.load(**model_args)
+    elif algorithm == 'DQN':
+        model = DQN.load(**model_args)
+    elif algorithm == 'ARS':
+        model = ARS.load(**model_args)
     else:
-        model = RecurrentPPO.load(model_path, tb_log_name=f'{algorithm}_set{st}')
+        model = RecurrentPPO.load(**model_args)
     return model
 
 # Converts a list of binary digits to its decimal equivalent
@@ -37,3 +47,15 @@ def binary_list_to_decimal(bin_list):
 # Parses a string into a bool
 def parse_bool(string):
     return bool(distutils.util.strtobool(string))
+
+# Encoding function: (x, y, z) → Discrete
+def encode_action(action):
+    x, y, z = action
+    return x + 5 * y + 25 * z  # 25 = 5 * 5
+
+# Decoding function: Discrete → (x, y, z)
+def decode_action(action):
+    x = action // 25
+    y = (action // 5) % 5
+    z = action % 5
+    return np.array([x, y, z])

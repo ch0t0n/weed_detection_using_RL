@@ -1,9 +1,9 @@
 # Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning
 
-This is the codebase for the ICRA 2025 paper "Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning", written by Jahid Chowdhury Choton, John Woods, Raja Farrukh Ali, and William Hsu. In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
+This is the codebase for the IROS 2025 paper "Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning", written by Jahid Chowdhury Choton, John Woods, Raja Farrukh Ali, and William Hsu. In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
 
 * Developing a novel, customizable RL environment that represents an agricultural field with 3 spraying robots
-* Analyzing 4 state-of-the-art RL algorithms across 10 different environments
+* Analyzing 6 state-of-the-art RL algorithms across 10 different environments
 * Creating a simultion framework of the environment using the CoppeliaSim robot simulator
 
 ## Setup
@@ -44,11 +44,13 @@ To train an algorithm with the default configuration, run the following command:
 python3 train.py --algorithm A2C --set 1
 ```
 
-The currently implemented algorithms are `A2C`, `PPO`, `TRPO`, and `RecurrentPPO`. The possible values for --`set` depend on the number of sets in the `experiments` directory. Training can be further configured using the following command format:
+The currently implemented algorithms are `A2C`, `PPO`, `TRPO`, `DQN`, `ARS`, and `RecurrentPPO `. The possible values for --`set` depend on the number of sets in the `experiments` directory. Training can be further configured using the following command format:
 
 ```
-python3 train.py --algorithm {A2C, PPO, TRPO, RecurrentPPO} --set [set number] --verbose {0 for no output, 1 for info, 2 for debug} --gamma [discount factor] --steps [number of training steps] --num_envs [number of parallel environments] --resume {True for resuming training, False for new model}
+python3 train.py --algorithm {A2C, PPO, TRPO, DQN, ARS, RecurrentPPO} --set [set number] --verbose {0 for no output, 1 for info, 2 for debug} --gamma [discount factor] --steps [number of training steps] --num_envs [number of parallel environments] --seed [seed] --log_steps [logging interval] --resume {True for resuming training, False for new model} --device {cpu, cuda}
 ```
+
+Keep in mind that some hyperparameters only apply to certain algorithms (e.g. gamma isn't a hyperparameter for ARS). Specifying these hyperparameters while using an algorithm that doesn't use them will cause them to be ignored.
 
 ### On Compute Clusters
 
