@@ -32,8 +32,7 @@ if __name__ == "__main__":
     vec_env.seed(seed=args.seed)
     vec_env.action_space.seed(seed=args.seed)
     
-    if not os.path.exists('logs'):
-        os.makedirs('logs')
+    os.makedirs('logs', exist_ok=True)
 
     # Configure model
     if args.resume:
@@ -74,8 +73,7 @@ if __name__ == "__main__":
     print(f'Training lasted {end_time - start_time}')
     
     # Save model
-    if not os.path.exists('trained_models'):
-        os.makedirs('trained_models')
+    os.makedirs('trained_models', exist_ok=True)
     model.save(f'trained_models/{args.algorithm}_set{args.set}.zip')
 
     vec_env.close()
