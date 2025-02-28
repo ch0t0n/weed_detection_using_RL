@@ -1,4 +1,4 @@
-name: wd
+name: rl4pag
 channels:
   - conda-forge
   - defaults
