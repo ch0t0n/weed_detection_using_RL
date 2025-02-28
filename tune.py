@@ -2,6 +2,7 @@ import optuna
 import os
 import argparse
 import inspect
+import yaml
 from datetime import datetime
 from stable_baselines3 import A2C, PPO, DQN
 from sb3_contrib import TRPO, ARS, RecurrentPPO
@@ -40,7 +41,7 @@ if __name__ == '__main__':
 
         # Configure environment
         env_config = load_experiment(f'experiments/set{args.set}.yaml')
-        vec_env = make_vec_env('ThreeAgentGridworld-v1', env_kwargs={'env_config': env_config, 'seed': args.seed}, n_envs=4)
+        vec_env = make_vec_env('ThreeAgentGridworld-v1', env_kwargs={'env_config': env_config, 'seed': args.seed}, n_envs=args.num_envs)
         vec_env.seed(seed=args.seed)
         vec_env.action_space.seed(seed=args.seed)
 
@@ -103,5 +104,8 @@ if __name__ == '__main__':
     print(f'Tuning lasted {end_time - start_time}\n')
 
     # Best hyperparameters
-    print("Best hyperparameters:", study.best_params)
-    print("Best mean reward:", best_reward)
+    os.makedirs('tuned_hyperparameters', exist_ok=True)
+    with open(f'tuned_hyperparameters/{args.algorithm}_set{args.set}.yaml', 'w') as save_file:
+        yaml.dump(study.best_params, save_file)
+    print(f"Best hyperparameters for {args.algorithm}: {study.best_params}")
+    print(f"Best mean reward for {args.algorithm}: {best_reward}")

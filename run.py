@@ -10,6 +10,7 @@ if __name__ == '__main__':
     # Parse arguments
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('--path', type='str', required=True, help='The directory to look for trained models in')
     parser.add_argument('--algorithm', type=str, required=True, choices=['A2C', 'PPO', 'TRPO', 'RecurrentPPO'], help='The DRL algorithm to use')
     parser.add_argument('--set', type=int, required=True, help='The experiment set to use, from the sets defined in the experiments directory')
     parser.add_argument('--simulate', type=parse_bool, default=False, help='If true, uses the Coppelia Simulator to show the environment. If false, renders the environment using PyGame')
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Load the model
-    model = load_model(args.algorithm, args.set, args.seed, args.device)
+    model = load_model(args.algorithm, args.set, args.seed, args.device, args.path)
 
     # Make the environment
     env_config = load_experiment(f'experiments/set{args.set}.yaml')

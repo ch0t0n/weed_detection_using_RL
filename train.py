@@ -15,7 +15,6 @@ if __name__ == "__main__":
     parser.add_argument('--algorithm', type=str, required=True, choices=['A2C', 'PPO', 'TRPO', 'DQN', 'ARS', 'RecurrentPPO'], help='The DRL algorithm to use')
     parser.add_argument('--set', required=True, type=int, help='The experiment set to use, from the sets defined in the experiments directory')
     parser.add_argument('--verbose', type=int, choices=[0, 1, 2], default=0, help='The verbosity level: 0 no output, 1 info, 2 debug')
-    parser.add_argument('--gamma', type=float, default=0.99, help='The discount factor for the DRL algorithm')
     parser.add_argument('--steps', type=int, default=1_000_000, help='The amount of steps to train the DRL model for')
     parser.add_argument('--num_envs', type=int, default=4, help='The number of parallel environments to run')
     parser.add_argument('--seed', type=int, default=None, help='The random seed to use')
@@ -28,7 +27,7 @@ if __name__ == "__main__":
     
     # Configure environment
     env_config = load_experiment(f'experiments/set{args.set}.yaml')
-    vec_env = make_vec_env('ThreeAgentGridworld-v1', env_kwargs={'env_config': env_config, 'seed': args.seed}, n_envs=4)
+    vec_env = make_vec_env('ThreeAgentGridworld-v1', env_kwargs={'env_config': env_config, 'seed': args.seed}, n_envs=args.num_envs)
     vec_env.seed(seed=args.seed)
     vec_env.action_space.seed(seed=args.seed)
     
@@ -36,7 +35,7 @@ if __name__ == "__main__":
 
     # Configure model
     if args.resume:
-        model = load_model(args.algorithm, args.set, args.seed)
+        model = load_model(args.algorithm, args.set, args.seed, args.device, 'trained_models')
         model.set_env(vec_env)
     else:
         model_args = {
@@ -47,8 +46,6 @@ if __name__ == "__main__":
             'seed': args.seed,
             'device': args.device,
         }
-        if args.algorithm != 'ARS':
-            model_args['gamma'] = args.gamma
 
         if args.algorithm == 'A2C':
             model = A2C(**model_args)

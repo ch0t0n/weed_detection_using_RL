@@ -6,6 +6,7 @@ from shapely import Polygon
 from shapely.geometry import Point
 import numpy as np
 from src.utils import binary_list_to_decimal, decode_action
+from itertools import product
 
 # The agricultural field environment
 class ThreeAgentGridworldEnv(gym.Env):
@@ -51,22 +52,9 @@ class ThreeAgentGridworldEnv(gym.Env):
         self.reset(seed=seed)
 
     def obs_points(self):
-        xp,yp = self.Poly.exterior.xy
-        # Gridpoints
-        xs = np.arange(0, self.grid_size, 1)
-        ys = np.arange(0, self.grid_size, 1)
-        # Inside points
-        # print(xs,ys)
-        xps, yps = [], []
-        for xi in xs:
-            for yi in ys:
-                p = Point(xi,yi)
-                if self.Poly.contains(p):
-                    xps += [p.x]
-                    yps += [p.y]
-        xps += xp
-        yps += yp
-        obs_points = np.array(list(set(zip(xps,yps)))) # Taking unique observation points
+        xs = np.arange(0, 100, 1)
+        ys = np.arange(0, 100, 1)
+        obs_points = list(product(xs, ys))
         return obs_points
     
     def _get_obs(self):
