@@ -3,6 +3,7 @@ import os
 import argparse
 import inspect
 import yaml
+import gc
 from datetime import datetime
 from stable_baselines3 import A2C, PPO, DQN
 from sb3_contrib import TRPO, ARS, RecurrentPPO
@@ -92,6 +93,15 @@ if __name__ == '__main__':
             best_reward = mean_reward
             model.save(f'tuned_models/{args.algorithm}_set{args.set}.zip')
 
+        if args.device == 'cpu':
+            del model
+            gc.collect()
+        else:
+            del model
+            gc.collect()
+            import torch
+            torch.cuda.empty_cache()
+            
         return mean_reward
 
     # Optuna study
