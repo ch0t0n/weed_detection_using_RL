@@ -14,12 +14,14 @@ def load_experiment(path):
     return config
 
 # Loads in a trained model
-def load_model(algorithm, experiment_set, seed, device, models_dir):
+def load_model(algorithm, experiment_set, seed, device, models_dir, verbose, log_dir):
     model_args = {
         'path': f'{models_dir}/{algorithm}_set{experiment_set}.zip',
         'tb_log_name': f'{algorithm}_set{experiment_set}',
         'device': device,
         'seed': seed,
+        'verbose': verbose,
+        'tensorboard_log': log_dir,
     }
 
     if algorithm == 'A2C':

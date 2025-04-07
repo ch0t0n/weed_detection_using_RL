@@ -31,18 +31,18 @@ if __name__ == "__main__":
     vec_env.seed(seed=args.seed)
     vec_env.action_space.seed(seed=args.seed)
     
-    os.makedirs('logs', exist_ok=True)
+    os.makedirs('training_logs', exist_ok=True)
 
     # Configure model
     if args.resume:
-        model = load_model(args.algorithm, args.set, args.seed, args.device, 'trained_models')
+        model = load_model(args.algorithm, args.set, args.seed, args.device, 'trained_models', args.verbose, 'training_logs')
         model.set_env(vec_env)
     else:
         model_args = {
             'policy': 'MlpLstmPolicy' if args.algorithm == 'RecurrentPPO' else 'MlpPolicy',
             'env': vec_env,
             'verbose': args.verbose,
-            'tensorboard_log': './logs',
+            'tensorboard_log': './training_logs',
             'seed': args.seed,
             'device': args.device,
         }

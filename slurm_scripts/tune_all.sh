@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run tuning for all algorithms with: sbatch training_scripts/tune_all.sh
+# Run tuning for all algorithms with: sbatch slurm_scripts/tune_all.sh
 
 #SBATCH --array=0-4
 #SBATCH --job-name=RL4PAg

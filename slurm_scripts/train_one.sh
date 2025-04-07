@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run a single experiment with: sbatch training_scripts/train_one.sh
+# Run a single experiment with: sbatch slurm_scripts/train_one.sh
 
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1

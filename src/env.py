@@ -31,7 +31,7 @@ class ThreeAgentGridworldEnv(gym.Env):
         self.infected_locations = self.config['infected_locations']
         
         self.infected_length = len(self.infected_locations)
-        self.infected_state_length = 2**(len(self.infected_locations)) # 2**5, binary to decimal
+        self.infected_state_length = 2**10 # 10 weeds max, binary to decimal
         self.infected_dict = {v:0 for v in self.infected_locations} # dictionary of locations
         
         # Action and observation space

@@ -13,6 +13,7 @@ if __name__ == '__main__':
     parser.add_argument('--algorithm', type=str, required=True, choices=['A2C', 'PPO', 'TRPO', 'DQN', 'ARS', 'RecurrentPPO'], help='The DRL algorithm to use')
     parser.add_argument('--load_set', required=True, type=int, help='The experiment set to load, from the sets defined in the experiments directory')
     parser.add_argument('--train_set', required=True, type=int, help='The experiment set to train on, from the sets defined in the experiments directory. Must be different from load_set for transfer learning')
+    parser.add_argument('--verbose', type=int, choices=[0, 1, 2], default=0, help='The verbosity level: 0 no output, 1 info, 2 debug')
     parser.add_argument('--steps', type=int, default=1_000_000, help='The amount of steps to train the DRL model for while tuning')
     parser.add_argument('--num_envs', type=int, default=4, help='The number of parallel environments to run')
     parser.add_argument('--seed', type=int, default=None, help='The random seed to use')
@@ -34,7 +35,7 @@ if __name__ == '__main__':
 
     os.makedirs('transfer_logs', exist_ok=True)
 
-    model = load_model(args.algorithm, args.load_set, args.seed, args.device, 'tuned_models')
+    model = load_model(args.algorithm, args.load_set, args.seed, args.device, 'tuned_models', args.verbose, 'transfer_logs')
     model.set_env(vec_env)
 
     # Train model

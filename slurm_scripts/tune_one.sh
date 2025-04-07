@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run a single experiment with: sbatch training_scripts/tune_one.sh
+# Run a single experiment with: sbatch slurm_scripts/tune_one.sh
 
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
@@ -12,10 +12,10 @@
 #SBATCH --gres=gpu:1
 #SBATCH --export=NONE
 
-algorithm="RecurrentPPO"
+algorithm="A2C"
 set=1
 steps=1000000
 
-conda run --no-capture-output -n rl4pag python3 tune.py --algorithm $algorithm --set $set --steps $steps --seed 33 --log_steps 5000 --device "cuda"
+conda run --no-capture-output -n rl4pag python3 tune.py --algorithm $algorithm --set $set --steps $steps --seed 33 --log_steps 5000
 
 wait

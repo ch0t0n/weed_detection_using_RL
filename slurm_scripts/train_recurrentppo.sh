@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Run RecurrentPPO experiments with: sbatch training_scripts/train_recurrentppo.sh
+# Run RecurrentPPO experiments with: sbatch slurm_scripts/train_recurrentppo.sh
 
-#SBATCH --array=0-7
+#SBATCH --array=0-9
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
@@ -15,7 +15,7 @@
 
 # Modify these for other experiments
 algorithms=("RecurrentPPO")
-sets=(1 3 4 5 7 8 9 10)
+sets=(1 2 3 4 5 6 7 8 9 10)
 
 # IMPORTANT: array job length = num_algorithms * num_sets - 1
 num_algorithms=${#algorithms[@]}
