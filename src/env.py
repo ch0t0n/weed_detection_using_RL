@@ -5,12 +5,13 @@ from gymnasium import spaces
 from shapely import Polygon
 from shapely.geometry import Point
 import numpy as np
-from src.utils import binary_list_to_decimal
+from src.utils import binary_list_to_decimal, decode_action
+from itertools import product
 
 # The agricultural field environment
 class ThreeAgentGridworldEnv(gym.Env):
     metadata = {'render_modes': ['human', 'print', 'rgb_array'], "render_fps": 4}    
-    def __init__(self, render_mode=None, env_config=None):
+    def __init__(self, seed=None, render_mode=None, env_config=None):
         super(ThreeAgentGridworldEnv, self).__init__()
         self.config = copy.deepcopy(env_config)
         self.poly_vertices = self.config['field']
@@ -30,11 +31,11 @@ class ThreeAgentGridworldEnv(gym.Env):
         self.infected_locations = self.config['infected_locations']
         
         self.infected_length = len(self.infected_locations)
-        self.infected_state_length = 2**(len(self.infected_locations)) # 2**5, binary to decimal
+        self.infected_state_length = 2**10 # 10 weeds max, binary to decimal
         self.infected_dict = {v:0 for v in self.infected_locations} # dictionary of locations
         
         # Action and observation space
-        self.action_space = spaces.MultiDiscrete([5, 5, 5])  # 4 possible actions for each of the two agents
+        self.action_space = spaces.Discrete(5 ** 3)  # 5 possible actions for 3 agents
         self.observation_space = spaces.MultiDiscrete([self.observation_length, self.observation_length, self.observation_length, self.infected_state_length])
         
         assert render_mode is None or render_mode in self.metadata["render_modes"] # Check if the render mode is correct
@@ -48,25 +49,12 @@ class ThreeAgentGridworldEnv(gym.Env):
         self.clock = None
 
         # Reset the environment and start
-        self.reset()
+        self.reset(seed=seed)
 
     def obs_points(self):
-        xp,yp = self.Poly.exterior.xy
-        # Gridpoints
-        xs = np.arange(0, self.grid_size, 1)
-        ys = np.arange(0, self.grid_size, 1)
-        # Inside points
-        # print(xs,ys)
-        xps, yps = [], []
-        for xi in xs:
-            for yi in ys:
-                p = Point(xi,yi)
-                if self.Poly.contains(p):
-                    xps += [p.x]
-                    yps += [p.y]
-        xps += xp
-        yps += yp
-        obs_points = np.array(list(set(zip(xps,yps)))) # Taking unique observation points
+        xs = np.arange(0, 100, 1)
+        ys = np.arange(0, 100, 1)
+        obs_points = list(product(xs, ys))
         return obs_points
     
     def _get_obs(self):
@@ -78,11 +66,12 @@ class ThreeAgentGridworldEnv(gym.Env):
         return state, info
 
     def reset(self, seed=None, options={}):
+        super().reset(seed=seed)
         self.visited = set()
         self.step_count = 0
-        self.infected_locations = copy.copy(self.config['infected_locations'])
-        self.infected_dict = {v:0 for v in self.infected_locations} # dictionary of locations
-        self.agent_positions = self.config['init_positions']
+        self.infected_locations = copy.deepcopy(self.config['infected_locations'])
+        self.infected_dict = {v:0 for v in self.infected_locations} # 0 for unvisited infected locations, 1 for visited
+        self.agent_positions = copy.deepcopy(self.config['init_positions'])
         return self._get_obs()
 
     def step(self, action):
@@ -95,7 +84,8 @@ class ThreeAgentGridworldEnv(gym.Env):
         movements = [(-1, 0), (1, 0), (0, -1), (0, 1), (0, 0)]  # up, down, left, right, none
         
         # Update the positions of both agents
-        for i, act in enumerate(action):
+        decoded_action = decode_action(action)
+        for i, act in enumerate(decoded_action):
 
             movement = movements[act] # What movement to take
             new_position = self.agent_positions[i] + movement # New position after movement
