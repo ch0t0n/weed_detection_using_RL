@@ -2,13 +2,13 @@
 
 # Run RecurrentPPO experiments with: sbatch slurm_scripts/transfer_recurrentppo.sh
 
-#SBATCH --array=0-8
+#SBATCH --array=0-7
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
 #SBATCH --gpus-per-node=1
 #SBATCH --mem=4G
-#SBATCH --time=8:00:00
+#SBATCH --time=16:00:00
 #SBATCH --partition=ksu-gen-gpu.q
 #SBATCH --gres=gpu:1
 #SBATCH --export=NONE

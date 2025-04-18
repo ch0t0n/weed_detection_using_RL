@@ -2,12 +2,12 @@
 
 # Run all experiments with: sbatch slurm_scripts/transfer_all.sh
 
-#SBATCH --array=0-44
+#SBATCH --array=0-1
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=2
 #SBATCH --mem=4G
-#SBATCH --time=4:00:00
+#SBATCH --time=24:00:00
 #SBATCH --export=NONE
 
 # Modify these for other experiments
