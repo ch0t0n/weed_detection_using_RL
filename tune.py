@@ -1,7 +1,6 @@
 import optuna
 import os
 import argparse
-import inspect
 import yaml
 import gc
 from datetime import datetime
@@ -10,7 +9,7 @@ from sb3_contrib import TRPO, ARS, RecurrentPPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.callbacks import LogEveryNTimesteps
-from src.utils import load_experiment
+from src.utils import load_experiment, filter_args
 
 if __name__ == '__main__':
 
@@ -32,6 +31,19 @@ if __name__ == '__main__':
 
     os.makedirs('tuning_logs', exist_ok=True)
     os.makedirs('tuned_models', exist_ok=True)
+
+    if args.algorithm == 'A2C':
+        model_type = A2C
+    elif args.algorithm == 'PPO':
+        model_type = PPO
+    elif args.algorithm == 'TRPO':
+        model_type = TRPO
+    elif args.algorithm == 'DQN':
+        model_type = DQN
+    elif args.algorithm == 'ARS':
+        model_type = ARS
+    else:
+        model_type = RecurrentPPO
     
     mean_rewards = []
     best_reward = -1e10
@@ -53,32 +65,17 @@ if __name__ == '__main__':
             'tensorboard_log': './tuning_logs',
             'seed': args.seed,
             'device': args.device,
-            'n_steps': trial.suggest_categorical("n_steps", [5, 10, 20]),
-            'gamma': trial.suggest_float("gamma", 0.90, 0.99),
+            'n_steps': trial.suggest_categorical("n_steps", [5, 10, 20] if args.algorithm == 'A2C' else [1024, 2048, 4096]),            'gamma': trial.suggest_float("gamma", 0.90, 0.99),
             'learning_rate': trial.suggest_float("learning_rate", 0.0001, 0.02, log=True),
             'ent_coef': trial.suggest_float("ent_coef", 0.001, 0.05),
             'gae_lambda': trial.suggest_float("gae_lambda", 0.9, 1.0),
             'max_grad_norm': trial.suggest_float("max_grad_norm", 0.30, 0.99),
             'vf_coef': trial.suggest_float("vf_coef", 0.2, 0.7),
         }
-        
-        # Configure model
-        if args.algorithm == 'A2C':
-            model = A2C
-        elif args.algorithm == 'PPO':
-            model = PPO
-        elif args.algorithm == 'TRPO':
-            model = TRPO
-        elif args.algorithm == 'DQN':
-            model = DQN
-        elif args.algorithm == 'ARS':
-            model = ARS
-        else:
-            model = RecurrentPPO
 
-        model_kwargs = inspect.getfullargspec(model).args
-        filtered_args = {k:model_args[k] for k in model_args if k in model_kwargs}
-        model = model(**filtered_args)
+        # Configure model
+        filtered_args = filter_args(model_args, model_type)
+        model = model_type(**filtered_args)
 
         # Train model
         logger = LogEveryNTimesteps(n_steps=args.log_steps)
@@ -115,7 +112,8 @@ if __name__ == '__main__':
 
     # Best hyperparameters
     os.makedirs('tuned_hyperparameters', exist_ok=True)
+    filtered_params = filter_args(study.best_params, model_type)
     with open(f'tuned_hyperparameters/{args.algorithm}_set{args.set}.yaml', 'w') as save_file:
-        yaml.dump(study.best_params, save_file)
-    print(f"Best hyperparameters for {args.algorithm}: {study.best_params}")
+        yaml.dump(filtered_params, save_file)
+    print(f"Best hyperparameters for {args.algorithm}: {filtered_params}")
     print(f"Best mean reward for {args.algorithm}: {best_reward}")
