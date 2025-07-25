@@ -2,17 +2,17 @@
 
 # Run all experiments with: sbatch slurm_scripts/transfer_all.sh
 
-#SBATCH --array=0-1
+#SBATCH --array=0-49
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=2
+#SBATCH --ntasks-per-node=4
 #SBATCH --mem=4G
 #SBATCH --time=24:00:00
 #SBATCH --export=NONE
 
 # Modify these for other experiments
 algorithms=("A2C" "PPO" "TRPO" "ARS" "DQN")
-sets=(2 3 4 5 6 7 8 9 10)
+sets=(1 2 3 4 5 6 7 8 9 10)
 
 # IMPORTANT: array job length = num_algorithms * num_sets - 1
 num_algorithms=${#algorithms[@]}

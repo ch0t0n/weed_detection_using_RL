@@ -5,7 +5,7 @@
 #SBATCH --array=0-49
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=4
 #SBATCH --mem=4G
 #SBATCH --time=4:00:00
 #SBATCH --export=NONE

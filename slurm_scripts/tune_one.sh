@@ -5,11 +5,8 @@
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
-#SBATCH --gpus-per-node=1
 #SBATCH --mem=4G
 #SBATCH --time=160:00:00
-#SBATCH --partition=ksu-gen-gpu.q
-#SBATCH --gres=gpu:1
 #SBATCH --export=NONE
 
 algorithm="A2C"

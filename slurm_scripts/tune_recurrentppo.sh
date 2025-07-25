@@ -2,6 +2,7 @@
 
 # Run a single experiment with: sbatch slurm_scripts/tune_recurrentppo.sh
 
+#SBATCH --array=0-9
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
@@ -12,10 +13,20 @@
 #SBATCH --gres=gpu:1
 #SBATCH --export=NONE
 
-algorithm="RecurrentPPO"
-set=1
-steps=1000000
+# Modify these for other experiments
+algorithms=("RecurrentPPO")
+sets=(1 2 3 4 5 6 7 8 9 10)
 
-conda run --no-capture-output -n rl4pag python3 tune.py --algorithm $algorithm --set $set --steps $steps --seed 33 --log_steps 5000 --device "cuda"
+# IMPORTANT: array job length = num_algorithms * num_sets - 1
+num_algorithms=${#algorithms[@]}
+num_sets=${#sets[@]}
+
+index=$((SLURM_ARRAY_TASK_ID))
+algorithm_index=$((index / num_sets))
+algorithm=${algorithms[$algorithm_index]}
+set_index=$((index % num_sets))
+set=${sets[$set_index]}
+
+conda run --no-capture-output -n rl4pag python3 tune.py --algorithm $algorithm --set $set --steps 1000000 --seed 33 --log_steps 5000 --device "cuda"
 
 wait
