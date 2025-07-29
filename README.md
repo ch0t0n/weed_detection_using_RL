@@ -1,8 +1,9 @@
-# Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning
+# Formal Environment Design for Multi-Robot Selective Spraying in Precision Agriculture
 
-This is the codebase for the IROS 2025 paper "Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning", written by Jahid Chowdhury Choton, John Woods, Raja Farrukh Ali, and William Hsu. In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
+This is the codebase for the ACM SenSys 2026 paper "Formal Environment Design for Multi-Robot Selective Spraying in Precision Agriculture". In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
 
 * Developing a novel, customizable RL environment that represents an agricultural field with 3 spraying robots
+* The formal description of the optimization problem for multi-robot selective spraying and its proof of equivalence to the RL problem
 * Analyzing 6 state-of-the-art RL algorithms across 10 different environments
 * Creating a simultion framework of the environment using the CoppeliaSim robot simulator
 
@@ -206,7 +207,7 @@ We also provide some scripts to aid with plotting results. To plot the layouts o
 python3 plotting/plot_fields.py
 ```
 
-Once all experiments have been run, you can plot comparison results for each experiment setting:
+All plots are saved in the `plotting/plots` directory. Once all experiments have been run, you can plot comparison results for each experiment setting:
 
 ```
 python3 plotting/plot_results.py
