@@ -2,20 +2,20 @@
 
 # Run RecurrentPPO experiments with: sbatch slurm_scripts/transfer_recurrentppo.sh
 
-#SBATCH --array=0-7
+#SBATCH --array=0-9
 #SBATCH --job-name=RL4PAg
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4
 #SBATCH --gpus-per-node=1
 #SBATCH --mem=4G
-#SBATCH --time=16:00:00
+#SBATCH --time=24:00:00
 #SBATCH --partition=ksu-gen-gpu.q
 #SBATCH --gres=gpu:1
 #SBATCH --export=NONE
 
 # Modify these for other experiments
 algorithms=("RecurrentPPO")
-sets=(2 3 4 5 6 7 8 9 10)
+sets=(1 2 3 4 5 6 7 8 9 10)
 
 # IMPORTANT: array job length = num_algorithms * num_sets - 1
 num_algorithms=${#algorithms[@]}

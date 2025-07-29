@@ -3,6 +3,7 @@ import numpy as np
 from stable_baselines3 import A2C, PPO, DQN
 from sb3_contrib import TRPO, ARS, RecurrentPPO
 import distutils
+import inspect
 
 # Loads in an experiment config file
 def load_experiment(path):
@@ -61,3 +62,8 @@ def decode_action(action):
     y = (action // 5) % 5
     z = action % 5
     return np.array([x, y, z])
+
+# Filters out arguments that are not present in a model's constructor
+def filter_args(args, model):
+    model_kwargs = inspect.getfullargspec(model).args
+    return {k:args[k] for k in args if k in model_kwargs}

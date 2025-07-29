@@ -1,8 +1,9 @@
-# Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning
+# Formal Environment Design for Multi-Robot Selective Spraying in Precision Agriculture
 
-This is the codebase for the IROS 2025 paper "Optimal Multi-Robot Path Planning For Herbicide Spraying Using Reinforcement Learning", written by Jahid Chowdhury Choton, John Woods, Raja Farrukh Ali, and William Hsu. In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
+This is the codebase for the ACM SenSys 2026 paper "Formal Environment Design for Multi-Robot Selective Spraying in Precision Agriculture". In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
 
 * Developing a novel, customizable RL environment that represents an agricultural field with 3 spraying robots
+* The formal description of the optimization problem for multi-robot selective spraying and its proof of equivalence to the RL problem
 * Analyzing 6 state-of-the-art RL algorithms across 10 different environments
 * Creating a simultion framework of the environment using the CoppeliaSim robot simulator
 
@@ -206,8 +207,30 @@ We also provide some scripts to aid with plotting results. To plot the layouts o
 python3 plotting/plot_fields.py
 ```
 
-Once the experiments have been run, you can plot individual experiment performance and average algorithm performance with the following command:
+All plots are saved in the `plotting/plots` directory. Once all experiments have been run, you can plot comparison results for each experiment setting:
 
 ```
 python3 plotting/plot_results.py
 ```
+
+You can also plot results for individual settings by providing a flag for each experiment setting you want to plot:
+
+```
+python3 plotting/plot_results.py [-a] [-b] [-c]
+```
+
+The experiment settings are defined as follows:
+
+- `-a`: Training from scratch
+- `-b`: Hyperparameter tuning
+- `-c`: Transfer learning
+
+## LaTeX Tables
+
+We also provide a script to generate a LaTeX table containing the results of all experiments in tabular form. Once all experiments have been run for all settings, run the following command:
+
+```
+python3 tables/generate_table.py
+```
+
+The results table will be saved in `tables/results_table.tex`.
