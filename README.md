@@ -223,3 +223,13 @@ The experiment settings are defined as follows:
 - `-a`: Training from scratch
 - `-b`: Hyperparameter tuning
 - `-c`: Transfer learning
+
+## LaTeX Tables
+
+We also provide a script to generate a LaTeX table containing the results of all experiments in tabular form. Once all experiments have been run for all settings, run the following command:
+
+```
+python3 tables/generate_table.py
+```
+
+The results table will be saved in `tables/results_table.tex`.
