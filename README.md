@@ -1,6 +1,6 @@
 # Formal Environment Design for Multi-Robot Selective Spraying in Precision Agriculture
 
-This is the codebase for the ACM SenSys 2026 paper "Formal Environment Design for Multi-Robot Selective Spraying in Precision Agriculture". In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
+This is the codebase for the paper "Formal Environment Design for Multi-Robot Selective Spraying in Precision Agriculture". In this paper, we present a Reinforcement Learning (RL) solution for multi-robot systems used for spraying herbicide. Our contributions include:
 
 * Developing a novel, customizable RL environment that represents an agricultural field with 3 spraying robots
 * The formal description of the optimization problem for multi-robot selective spraying and its proof of equivalence to the RL problem
